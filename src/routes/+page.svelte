@@ -240,7 +240,7 @@
   }
 
   .frame {
-    padding: 2px;
+    padding: 4px;
     border: solid #333 1px;
   }
 
@@ -250,7 +250,7 @@
     max-height: 55vh;
     width: auto;
     height: auto;
-    padding: 0.3rem;
+    padding: 6px;
     margin: 0;
     border: solid #333 1px;
   }
@@ -320,25 +320,15 @@
     .photos {
       grid-template-columns: 1fr;
     }
-
-    .frame {
-      padding: 2px;
-    }
     .frame img {
-      max-height: 55vh;
-      padding: 0.3rem;
+      max-height: 40vh;
     }
-
     .plate {
-      width: min(90%, 400px);
-      padding: 0.5rem 0.5rem;
-      margin-top: 0.8rem;
+      padding: 0.5rem 1rem;
       font-size: 1rem;
     }
-
     .download {
-      padding: 0.4rem;
-      margin-left: 0.5rem;
+      padding: 0.6rem;
     }
   }
 </style>
