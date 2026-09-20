@@ -321,9 +321,10 @@
       grid-template-columns: 1fr;
     }
     .frame img {
-      max-height: 40vh;
+      max-height: 45vh;
     }
     .plate {
+      width: min(85%, 400px);
       padding: 0.5rem 1rem;
       font-size: 1rem;
     }

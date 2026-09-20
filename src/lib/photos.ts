@@ -16,4 +16,8 @@ export const photos: Photo[] = [
     grade: 1,
     image: "/photos/1_rinka.jpg",
   },
+  {
+    grade: 1,
+    image: "/photos/1_kenta.JPG",
+  },
 ];
