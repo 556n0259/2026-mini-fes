@@ -100,6 +100,8 @@
 </footer>
 
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=LINE+Seed+JP:wght@400;700&display=swap");
+
   header {
     border-bottom: 1px solid #ddd;
   }
@@ -108,10 +110,18 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-family: "LINE Seed JP", sans-serif;
+    font-weight: 400;
+    font-style: normal;
   }
 
   :global(body) {
     background: #f3f2ef;
+    color: #292825;
+  }
+
+  :global(button),
+  :global(a) {
     color: #292825;
   }
 
@@ -160,7 +170,7 @@
     cursor: pointer;
     width: 100%;
     text-align: center;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
   }
 
   .terms div {
@@ -182,7 +192,7 @@
     margin-bottom: 4rem;
     font-size: 0.85rem;
     width: 100%;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
 
   .filters label {
@@ -198,6 +208,7 @@
     padding: 0.5rem;
     margin-left: 1rem;
     border: 1px solid var(--border);
+    border-radius: 0;
     background: var(--white);
     font: inherit;
     cursor: pointer;
@@ -282,7 +293,6 @@
     border: solid var(--border) 1px;
     background: var(--white);
     cursor: pointer;
-    color: inherit;
   }
 
   footer p {
@@ -290,5 +300,45 @@
     letter-spacing: 0.1em;
     text-align: center;
     width: 100%;
+  }
+
+  /* Mobile */
+
+  @media (max-width: 600px) {
+    main {
+      width: calc(100% - 2rem);
+    }
+    .terms {
+      padding: 1rem;
+    }
+    .terms p {
+      width: calc(100% - 1rem);
+    }
+    .filters {
+      font-size: 1rem;
+    }
+    .photos {
+      grid-template-columns: 1fr;
+    }
+
+    .frame {
+      padding: 2px;
+    }
+    .frame img {
+      max-height: 55vh;
+      padding: 0.3rem;
+    }
+
+    .plate {
+      width: min(90%, 400px);
+      padding: 0.5rem 0.5rem;
+      margin-top: 0.8rem;
+      font-size: 1rem;
+    }
+
+    .download {
+      padding: 0.4rem;
+      margin-left: 0.5rem;
+    }
   }
 </style>
