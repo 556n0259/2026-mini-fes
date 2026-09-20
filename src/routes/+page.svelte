@@ -1,13 +1,8 @@
 <script lang="ts">
-  import { tick } from "svelte";
   import { photos } from "$lib/photos";
 
-  let selectedGrade: "all" | 1 | 2 | 3 = $state("all");
+  let selectedGrade: "all" | 1 | 2 = $state("all");
   let termsOpen = $state(false);
-
-  let downloadPhoto = $state<(typeof photos)[number] | null>(null);
-  let termsAgreed = $state(false);
-  let dontShowAgain = $state(false);
 
   const filteredPhotos = $derived(
     photos.filter((photo) => {
@@ -17,382 +12,283 @@
       return gradeMatch;
     }),
   );
-
-  async function openDownload(photo: (typeof photos)[number]) {
-    if (localStorage.getItem("photo-download-terms-agreed") === "true") {
-      window.open(photo.image, "_blank");
-      return;
-    }
-
-    downloadPhoto = photo;
-    termsAgreed = false;
-    dontShowAgain = false;
-  }
-
-  function closeDownload() {
-    downloadPhoto = null;
-  }
-
-  function goToDownload() {
-    if (!downloadPhoto || !termsAgreed) return;
-
-    if (dontShowAgain) {
-      localStorage.setItem("photo-download-terms-agreed", "true");
-    }
-
-    const imageUrl = downloadPhoto.image;
-    downloadPhoto = null;
-    window.open(imageUrl, "_blank");
-  }
 </script>
 
 <svelte:head>
-  <title>写真部展示</title>
+  <title>写真部データ配布</title>
   <meta name="description" content="文化祭 写真部展示" />
 </svelte:head>
 
 <header>
-  <h1>写真部展示</h1>
-
-  <button
-    class="terms-button"
-    onclick={() => (termsOpen = !termsOpen)}
-    aria-expanded={termsOpen}
-  >
-    利用規約
-    <span>{termsOpen ? "▲" : "▼"}</span>
-  </button>
-
-  {#if termsOpen}
-    <section class="terms">
-      <h2>利用規約</h2>
-
-      <p>
-        展示写真のダウンロード・利用にあたっては、以下の事項をご確認ください。
-      </p>
-
-      <ul>
-        <li>写真の著作権は各作者に帰属します。</li>
-        <li>個人的な利用の範囲でご利用ください。</li>
-        <li>無断での再配布・販売・加工・転載はご遠慮ください。</li>
-      </ul>
-    </section>
-  {/if}
+  <h1>写真部データ配布</h1>
 </header>
 
 <main>
+  <section class="terms">
+    <button onclick={() => (termsOpen = !termsOpen)} aria-expanded={termsOpen}>
+      利用規約
+      <span>{termsOpen ? "▲" : "▼"}</span>
+    </button>
+    {#if termsOpen}
+      <div>
+        <p>ダウンロードされた時点で、規約に同意したものとみなします。</p>
+        <p>
+          壁紙への設定などの個人利用の範囲で、どなたでも無料でご利用いただけます。トリミング・加工可能です。<br
+          />
+        </p>
+        <p>
+          【禁止事項】<br />
+          転載/二次配布/SNSプロフィールへの利用/自作発言/商用利用
+        </p>
+        <p>
+          【注意事項】<br />
+          各写真の著作権は、福岡高校写真部および撮影者に帰属します。データを利用したことで生じたトラブルや不具合について、当部および写真部は一切の責任を負いません。
+        </p>
+      </div>
+    {/if}
+  </section>
+
   <section class="filters">
     <label>
-      学年
+      <span>学年</span>
       <select bind:value={selectedGrade}>
         <option value="all">すべて</option>
         <option value={1}>1年</option>
         <option value={2}>2年</option>
-        <option value={3}>3年</option>
       </select>
     </label>
-  </section>
 
-  <p class="result-count">
-    {filteredPhotos.length}作品
-  </p>
+    <p class="result-count">
+      {filteredPhotos.length}作品
+    </p>
+  </section>
 
   <section class="photos">
     {#each filteredPhotos as photo}
-      <article class="photo-card">
-        <img
-          src={photo.image}
-          alt={photo.title}
-          draggable="false"
-          oncontextmenu={(event) => event.preventDefault()}
-        />
+      <div>
+        <div class="photo">
+          <div class="frame">
+            <img
+              src={photo.image}
+              alt="写真"
+              draggable="false"
+              oncontextmenu={(event) => event.preventDefault()}
+            />
+          </div>
+        </div>
 
-        <div class="info">
-          <h2>{photo.title}</h2>
-          <p>{photo.description}</p>
-          <button class="download" onclick={() => openDownload(photo)}>
+        <div class="plate">
+          <span>{photo.grade}年</span>
+
+          <button
+            class="download"
+            onclick={() => window.open(photo.image, "_blank")}
+          >
             ダウンロード
           </button>
         </div>
-      </article>
+      </div>
     {/each}
   </section>
-
-  {#if filteredPhotos.length === 0}
-    <p class="no-results">条件に一致する写真がありません。</p>
-  {/if}
 </main>
 
-{#if downloadPhoto}
-  <div class="modal-backdrop">
-    <div
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="download-terms-title"
-    >
-      <h2 id="download-terms-title">利用規約</h2>
-
-      <div class="terms-content">
-        <h3>写真の利用について</h3>
-
-        <p>
-          展示写真のダウンロード・利用にあたっては、
-          以下の事項をご確認ください。
-        </p>
-
-        <ul>
-          <li>写真の著作権は各作者に帰属します。</li>
-          <li>個人的な利用の範囲でご利用ください。</li>
-          <li>無断での再配布・販売・加工・転載はご遠慮ください。</li>
-        </ul>
-
-        <p>
-          上記の内容を確認し、規約に同意したうえで ダウンロードしてください。
-        </p>
-      </div>
-
-      <label class="checkbox">
-        <input type="checkbox" bind:checked={termsAgreed} />
-        <span>利用規約に同意</span>
-      </label>
-
-      <label class="checkbox">
-        <input type="checkbox" bind:checked={dontShowAgain} />
-        <span>以降は表示しない</span>
-      </label>
-
-      <div class="modal-actions">
-        <button
-          class="download-page"
-          onclick={goToDownload}
-          disabled={!termsAgreed}
-        >
-          ダウンロードページへ
-        </button>
-
-        <button class="cancel" onclick={closeDownload}> キャンセル </button>
-      </div>
-    </div>
-  </div>
-{/if}
+<footer>
+  <a href="https://www.instagram.com/fhs_photo.club/" target="_blank">
+    <span>Instagram @fhs_photo.club</span>
+  </a>
+  <p>&copy; 福岡高校写真部</p>
+</footer>
 
 <style>
   header {
     border-bottom: 1px solid #ddd;
   }
 
-  header > h1,
-  header > .terms-button,
-  .terms {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+  :global(*) {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
   }
 
-  header > h1 {
-    padding: 2rem 1rem 1rem;
-    margin-top: 0;
-    margin-bottom: 0;
+  :global(body) {
+    background: #f3f2ef;
+    color: #292825;
   }
 
-  .terms-button {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  :root {
+    --border: #888;
+    --white: #f8f7f4;
+  }
+
+  /* Header */
+
+  header {
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    letter-spacing: 0.1em;
+    text-align: center;
     width: 100%;
-    padding: 1rem;
-    border: 0;
-    background: none;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
+    padding: 1.5rem 0;
   }
 
-  .terms-button span {
-    font-size: 0.8rem;
-  }
-
-  .terms {
-    padding: 0 1rem 1.5rem;
-  }
-
-  .terms h2 {
-    font-size: 1.1rem;
-  }
-
-  .terms li {
-    margin: 0.5rem 0;
-  }
+  /* Main */
 
   main {
-    max-width: 1200px;
+    width: min(1000px, calc(100% - 4rem));
+    padding: 2rem 0 8rem;
     margin: 0 auto;
-    padding: 2rem 1rem;
   }
+
+  /* Terms */
+
+  .terms {
+    font-size: 1rem;
+    background: var(--white);
+    width: 100%;
+    border: solid var(--border) 1px;
+    padding: 1rem 2rem;
+    margin: 0 auto 2rem;
+  }
+
+  .terms button {
+    font: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+
+  .terms div {
+    width: 100%;
+    padding: 1rem 0 0;
+    margin: 1rem auto 0;
+    border-top: solid var(--border) 1px;
+  }
+
+  .terms p {
+    width: min(800px, calc(100% - 4rem));
+    font: inherit;
+    margin: 0.5rem auto;
+  }
+
+  /* Filter */
 
   .filters {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 4rem;
+    font-size: 0.85rem;
+    width: 100%;
+    letter-spacing: 0.08em;
   }
 
-  label {
+  .filters label {
+    padding: 0 1rem 1rem;
+    border-bottom: 1px solid var(--border);
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    align-items: center;
+    flex-direction: row;
   }
 
-  select {
-    min-width: 160px;
-    padding: 0.6rem;
+  .filters select {
+    flex-grow: 1;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    border: 1px solid var(--border);
+    background: var(--white);
     font: inherit;
+    cursor: pointer;
   }
 
   .result-count {
-    color: #666;
+    padding: 1rem 1rem 0;
   }
+
+  /* Photos */
 
   .photos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5rem 3rem;
   }
 
-  .photo-card {
-    overflow: hidden;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: white;
+  .photos > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .photo-card img {
+  .photo {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .frame {
+    padding: 2px;
+    border: solid #333 1px;
+  }
+
+  .frame img {
     display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 55vh;
+    width: auto;
+    height: auto;
+    padding: 0.3rem;
+    margin: 0;
+    border: solid #333 1px;
   }
 
-  .info {
-    padding: 1rem;
-  }
-
-  .info h2 {
-    margin: 0 0 0.5rem;
-  }
-
-  .info p {
-    margin: 0.4rem 0;
+  .plate {
+    display: flex;
+    align-items: center;
+    width: min(90%, 400px);
+    padding: 0.5rem 0.5rem;
+    margin-top: 0.8rem;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
   }
 
   .download {
-    display: inline-block;
-    margin-top: 0.8rem;
-    padding: 0.6rem 1rem;
-    border: 1px solid #333;
-    border-radius: 4px;
-    color: inherit;
-    text-decoration: none;
+    flex-grow: 1;
+    padding: 0.4rem;
+    margin-left: 0.5rem;
+    border: solid var(--border) 1px;
+    border-radius: 0;
+    background: var(--white);
+    cursor: pointer;
+    font: inherit;
   }
 
-  .no-results {
-    padding: 3rem 0;
+  /* Footer */
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+
+  footer a {
+    display: block;
+    width: fit-content;
+    padding: 1rem 2rem;
+    margin: 0 auto 1rem;
+    border: solid var(--border) 1px;
+    background: var(--white);
+    cursor: pointer;
+    color: inherit;
+  }
+
+  footer p {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
     text-align: center;
-  }
-
-  @media (max-width: 600px) {
-    .filters {
-      flex-direction: column;
-    }
-
-    select {
-      width: 100%;
-    }
-  }
-
-  .download {
-    display: inline-block;
-    margin-top: 0.8rem;
-    padding: 0.6rem 1rem;
-    border: 1px solid #333;
-    border-radius: 4px;
-    background: white;
-    color: inherit;
-    font: inherit;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background: rgb(0 0 0 / 50%);
-    z-index: 1000;
-  }
-
-  .modal {
-    width: min(600px, 100%);
-    max-height: min(700px, 90vh);
-    overflow: auto;
-    padding: 1.5rem;
-    border-radius: 8px;
-    background: white;
-    box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
-  }
-
-  .modal h2 {
-    margin-top: 0;
-  }
-
-  .terms-content {
-    height: 300px;
-    overflow-y: auto;
-    margin: 1rem 0;
-    padding: 1rem;
-    border: 1px solid #ddd;
-  }
-
-  .checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0.8rem 0;
-  }
-
-  .checkbox input {
-    width: 1.1rem;
-    height: 1.1rem;
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-  }
-
-  .modal-actions button {
-    padding: 0.7rem 1rem;
-    border: 1px solid #333;
-    border-radius: 4px;
-    background: white;
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .modal-actions button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .download-page {
-    flex: 1;
-  }
-
-  .cancel {
-    flex: 0 0 auto;
+    width: 100%;
   }
 </style>
