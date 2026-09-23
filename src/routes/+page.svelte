@@ -102,10 +102,6 @@
 <style>
   @import url("https://fonts.googleapis.com/css2?family=LINE+Seed+JP:wght@400;700&display=swap");
 
-  header {
-    border-bottom: 1px solid #ddd;
-  }
-
   :global(*) {
     box-sizing: border-box;
     padding: 0;
@@ -303,19 +299,24 @@
   }
 
   /* Mobile */
-
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
+    .photos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .terms p {
+      width: calc(100% - 1rem);
+    }
+    .filters,
+    .plate {
+      font-size: 1rem;
+    }
+  }
+  @media (max-width: 500px) {
     main {
       width: calc(100% - 2rem);
     }
     .terms {
       padding: 1rem;
-    }
-    .terms p {
-      width: calc(100% - 1rem);
-    }
-    .filters {
-      font-size: 1rem;
     }
     .photos {
       grid-template-columns: 1fr;
@@ -324,9 +325,7 @@
       max-height: 45vh;
     }
     .plate {
-      width: min(85%, 400px);
       padding: 0.5rem 1rem;
-      font-size: 1rem;
     }
     .download {
       padding: 0.6rem;
