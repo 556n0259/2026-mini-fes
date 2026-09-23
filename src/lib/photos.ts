@@ -6,18 +6,22 @@ export type Photo = {
 export const photos: Photo[] = [
   {
     grade: 2,
-    image: "/photos/2_yuuri.jpg",
+    image: "/photos/2_01.jpg",
+  },
+  {
+    grade: 2,
+    image: "/photos/2_02.jpg",
   },
   {
     grade: 1,
-    image: "/photos/1_ranko.jpeg",
+    image: "/photos/1_01.JPG",
   },
   {
     grade: 1,
-    image: "/photos/1_rinka.jpg",
+    image: "/photos/1_02.jpeg",
   },
   {
     grade: 1,
-    image: "/photos/1_kenta.JPG",
+    image: "/photos/1_03.jpg",
   },
 ];
