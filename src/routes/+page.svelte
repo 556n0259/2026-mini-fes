@@ -131,7 +131,7 @@
 
   header {
     border-bottom: 1px solid var(--border);
-    padding-bottom:1.5rem;
+    padding-bottom:1rem;
   }
 
   header h1 {
