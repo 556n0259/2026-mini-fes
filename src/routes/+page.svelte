@@ -21,6 +21,7 @@
 
 <header>
   <h1>写真部データ配布</h1>
+  <p>2-9にて展示中</p>
 </header>
 
 <main>
@@ -130,6 +131,7 @@
 
   header {
     border-bottom: 1px solid var(--border);
+    padding-bottom:1.5rem;
   }
 
   header h1 {
@@ -138,6 +140,12 @@
     text-align: center;
     width: 100%;
     padding: 1.5rem 0;
+  }
+
+  header p {
+    font-size: 1rem;
+    text-align: center;
+    width: 100%;
   }
 
   /* Main */
